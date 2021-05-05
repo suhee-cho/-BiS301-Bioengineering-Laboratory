@@ -10,6 +10,7 @@ using namespace std;
 
 int main()
 {
+	/*
 	ifstream texts[6];
 	string strings[6];
 	int len[6];
@@ -34,27 +35,22 @@ int main()
 		copy(strings[i].begin(), strings[i].end(), seq[i]); // string to char array
 		seq[i][strings[i].size()] = '\0';
 	}
-	//cout << seq[0][len[0]] << endl;
-/*
-	for (int i = 0; i < 6; i ++){
-		cout << seq[i] << endl;
-	}
-*/
-	//char seq_x[len[1]] = seq[1];
-	//char seq_y[len[0]] = seq[0];
+	*/
+	char seq_x[] = "TTCCG";
+	char seq_y[] = "TAACTCG";
 
-	DPmat SA(seq[1],seq[0]);
+	DPmat SA(seq_x,seq_y);
 	SA.fill_in_DPmat();
 
-	//SA.print_mat();
-	//cout<<"y: "<<seq[0]<<endl;
-    //cout<<"x: "<<seq[1]<<endl<<endl;
+	SA.print_mat();
+	cout<<"y: "<<seq_y<<endl;
+    cout<<"x: "<<seq_x<<endl<<endl;
 	cout << SA.get_MAX_X() << endl;
 	cout << SA.get_MAX_Y() << endl;
-	cout << SA.get_LEN_Y() << endl;
+	cout << SA.get_MAX_score() << endl;
 
-	SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y(), SA.get_LEN_Y()-1);
-	delete[] seq;
+	SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y());
+	// delete[] seq;
 
 	return 0;
 }

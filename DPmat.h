@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <sstream>
 #include "Cell.h"
 
 using namespace std;
@@ -15,7 +16,7 @@ public:
 	void print_z_chr();
 	void fill_in_DPmat();
 	void print_mat();
-	void trace_back(int trace_back_i, int trace_back_j, int trace_back_cnt);
+	void trace_back(int trace_back_i, int trace_back_j);
 	int chr2int(char chr);
 	char int2chr(int num);
 
@@ -31,7 +32,8 @@ public:
 private:
 	int* x;
 	int* y;
-	int* z;
+	//int* z;
+	stringstream z;
 
 	int LEN_OF_X;
 	int LEN_OF_Y;
