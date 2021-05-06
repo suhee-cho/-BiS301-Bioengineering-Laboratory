@@ -78,7 +78,7 @@ int DPmat::chr2int(char chr)
 	else if ((chr == 'V')||(chr == 'v')) return 20;
 	else
 	{
-		cout << "Input Error! NOT valid character(A,T,G,C)" << endl;
+		cout << "Input Error! NOT valid aa code" << endl;
 		exit(0);
 	}
 }
@@ -107,7 +107,7 @@ char DPmat::int2chr(int num)
 	else if (num == 20) return 'V';
 	else
 	{
-		cout << "Output Error! NOT valid number(0,1,2,3,4)" << endl;
+		cout << "Output Error! NOT valid number(0-20)" << endl;
 		exit(0);
 	}
 }
