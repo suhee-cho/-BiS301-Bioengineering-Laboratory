@@ -37,8 +37,9 @@ int main()
 	for (i = 1; i < 6; i++){
 		DPmat SA(seq[i],seq[0]);
 		SA.fill_in_DPmat();
-		cout << "maximum optimal local alignment score for templates_0"
-			 << i << ": " << SA.get_MAX_score() << endl;
+		cout << "##########Templates_0" << i << "##########" << endl;
+	
+		SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y());
 	}
 
 	return 0;

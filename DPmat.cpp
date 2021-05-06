@@ -115,11 +115,13 @@ char DPmat::int2chr(int num)
 void DPmat::print_z_chr()
 {
 	int i;
-	
 	string str = z.str();
 	reverse(str.begin(), str.end());
-	cout << "z: " << str << endl;
-	cout << "	score: " << MAX_score << endl;
+	cout << "Aligned target sequence: " << endl;
+	cout << str << endl;cout << "maximum optimal local alignment score"
+		 << ": " << MAX_score << endl;
+	cout << "This alignment corresponds to " << MAX_Y - str.length()
+		 << "th to " << MAX_Y << "th residues of reference sequence.\n" << endl;
 }
 
 void DPmat::print_mat()
@@ -200,14 +202,15 @@ void DPmat::trace_back(int trace_back_i, int trace_back_j)
 		z << int2chr(x[trace_back_i-1]);
 		trace_back(trace_back_i-1, trace_back_j-1);
 	}
-	if (flag[0]) { //left. x is blank
-		z << "-";
-		trace_back(trace_back_i, trace_back_j-1);
-	}
-	if (flag[2]) { // upward. y is blank
+	else if (flag[2]) { // upward. y is blank
 		z << int2chr(x[trace_back_i-1]);
 		trace_back(trace_back_i-1, trace_back_j);
 	}
+	else if (flag[0]) { //left. x is blank
+		z << "-";
+		trace_back(trace_back_i, trace_back_j-1);
+	}
+	
 }
 
 DPmat::~DPmat()
