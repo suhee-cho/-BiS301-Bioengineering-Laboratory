@@ -34,17 +34,12 @@ int main()
 		seq[i][strings[i].size()] = '\0';
 	}
 
-	for (i = 1; i <= 6; i++){
+	for (i = 1; i < 6; i++){
 		DPmat SA(seq[i],seq[0]);
 		SA.fill_in_DPmat();
 		cout << "maximum optimal local alignment score for templates_0"
 			 << i << ": " << SA.get_MAX_score() << endl;
 	}
-
-	//cout << "MAX_X: " << SA.get_MAX_X() << endl;
-	//cout << "MAX_Y: " << SA.get_MAX_Y() << endl;
-	// SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y());
-	// delete[] seq;
 
 	return 0;
 }

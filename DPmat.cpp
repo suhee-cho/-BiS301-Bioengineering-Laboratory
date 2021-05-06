@@ -117,11 +117,8 @@ void DPmat::print_z_chr()
 	int i;
 	
 	string str = z.str();
-	// cout << str << endl;
 	reverse(str.begin(), str.end());
 	cout << "z: " << str << endl;
-    // print z (A, T, G, C, -)
-    // print score of mat[LEN_OF_X][LEN_OF_Y]
 	cout << "	score: " << MAX_score << endl;
 }
 
@@ -217,7 +214,6 @@ DPmat::~DPmat()
 {
 	delete [] x;
 	delete [] y;
-	// delete [] z;
 
 	for(int i = 0; i<LEN_OF_X+1; i++) {
 		delete [] mat[i];
