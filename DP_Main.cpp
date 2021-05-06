@@ -5,12 +5,10 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-//#include <cctype>
 using namespace std;
 
 int main()
 {
-	/*
 	ifstream texts[6];
 	string strings[6];
 	int len[6];
@@ -35,21 +33,17 @@ int main()
 		copy(strings[i].begin(), strings[i].end(), seq[i]); // string to char array
 		seq[i][strings[i].size()] = '\0';
 	}
-	*/
-	char seq_x[] = "TTCCG";
-	char seq_y[] = "TAACTCG";
 
-	DPmat SA(seq_x,seq_y);
-	SA.fill_in_DPmat();
+	for (i = 1; i <= 6; i++){
+		DPmat SA(seq[i],seq[0]);
+		SA.fill_in_DPmat();
+		cout << "maximum optimal local alignment score for templates_0"
+			 << i << ": " << SA.get_MAX_score() << endl;
+	}
 
-	SA.print_mat();
-	cout<<"y: "<<seq_y<<endl;
-    cout<<"x: "<<seq_x<<endl<<endl;
-	cout << SA.get_MAX_X() << endl;
-	cout << SA.get_MAX_Y() << endl;
-	cout << SA.get_MAX_score() << endl;
-
-	SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y());
+	//cout << "MAX_X: " << SA.get_MAX_X() << endl;
+	//cout << "MAX_Y: " << SA.get_MAX_Y() << endl;
+	// SA.trace_back(SA.get_MAX_X(), SA.get_MAX_Y());
 	// delete[] seq;
 
 	return 0;
