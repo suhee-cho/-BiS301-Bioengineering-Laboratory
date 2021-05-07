@@ -49,9 +49,9 @@ int main()
 	sort(score_idx.begin(), score_idx.end());
 
 	// print the result in desired form, in descending order
-	for (i = 199; i >= 0; i--){
-		cout << 200 - i << " " << score_idx[i].second << " score: " 
-		<< score_idx[i].first << endl;
+	for (i = 0; i < 10; i++){
+		cout << i << " " << score_idx[199-i].second << " score: " 
+		<< score_idx[199-i].first << endl;
 	}
 
 	return 0;
