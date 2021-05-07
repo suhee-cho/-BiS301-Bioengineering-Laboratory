@@ -3,48 +3,51 @@
 #include "algorithm"
 
 
-///////////////////////////// A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V
-int scoring_mat[20][20] = { { 4,-1,-2,-2, 0,-1,-1, 0,-2,-1,-1,-1,-1,-2,-1, 1, 0,-3,-2, 0},
-                        	{-1, 5, 0,-2,-3, 1, 0,-2, 0,-3,-2, 2,-1,-3,-2,-1,-1,-3,-2,-3},
-                            {-2, 0, 6, 1,-3, 0, 0, 0, 1,-3,-3, 0,-2,-3,-2, 1, 0,-4,-2,-3},
-                            {-2,-2, 1, 6,-3, 0, 2,-1,-1,-3,-4,-1,-3,-3,-1, 0,-1,-4,-3,-3},
-                            { 0,-3,-3,-3, 9,-3,-4,-3,-3,-1,-1,-3,-1,-2,-3,-1,-1,-2,-2,-1},
-                            {-1, 1, 0, 0,-3, 5, 2,-2, 0,-3,-2, 1, 0,-3,-1, 0,-1,-2,-1,-2},
-                            {-1, 0, 0, 2,-4, 2, 5,-2, 0,-3,-3, 1,-2,-3,-1, 0,-1,-3,-2,-2},
-                            { 0,-2, 0,-1,-3,-2,-2, 6,-2,-4,-4,-2,-3,-3,-2, 0,-2,-2,-3,-3},
-                            {-2, 0, 1,-1,-3, 0, 0,-2, 8,-3,-3,-1,-2,-1,-2,-1,-2,-2, 2,-3},
-                            {-1,-3,-3,-3,-1,-3,-3,-4,-3, 4, 2,-3, 1, 0,-3,-2,-1,-3,-1, 3},
-                            {-1,-2,-3,-4,-1,-2,-3,-4,-3, 2, 4,-2, 2, 0,-3,-2,-1,-2,-1, 1},
-                            {-1, 2, 0,-1,-3, 1, 1,-2,-1,-3,-2, 5,-1,-3,-1, 0,-1,-3,-2,-2},
-                            {-1,-1,-2,-3,-1, 0,-2,-3,-2, 1, 2,-1, 5, 0,-2,-1,-1,-1,-1, 1},
-                            {-2,-3,-3,-3,-2,-3,-3,-3,-1, 0, 0,-3, 0, 6,-4,-2,-2, 1, 3,-1},
-                            {-1,-2,-2,-1,-3,-1,-1,-2,-2,-3,-3,-1,-2,-4, 7,-1,-1,-4,-3,-2},
-                            { 1,-1, 1, 0,-1, 0, 0, 0,-1,-2,-2, 0,-1,-2,-1, 4, 1,-3,-2,-2},
-                            { 0,-1, 0,-1,-1,-1,-1,-2,-2,-1,-1,-1,-1,-2,-1, 1, 5,-2,-2, 0},
-                            {-3,-3,-4,-4,-2,-2,-3,-2,-2,-3,-2,-3,-1, 1,-4,-3,-2,11, 2,-3},
-                            {-2,-2,-2,-3,-2,-1,-2,-3, 2,-1,-1,-2,-1, 3,-3,-2,-2, 2, 7,-1},
-                            { 0,-3,-3,-3,-1,-2,-2,-3,-3, 3, 1,-2, 1,-1,-2,-2, 0,-3,-1, 4}};
+///////////////////////////// A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  Z  X
+int scoring_mat[23][23] = { { 4,-1,-2,-2, 0,-1,-1, 0,-2,-1,-1,-1,-1,-2,-1, 1, 0,-3,-2, 0,-2,-1, 0},
+                        	{-1, 5, 0,-2,-3, 1, 0,-2, 0,-3,-2, 2,-1,-3,-2,-1,-1,-3,-2,-3,-1, 0,-1},
+                            {-2, 0, 6, 1,-3, 0, 0, 0, 1,-3,-3, 0,-2,-3,-2, 1, 0,-4,-2,-3, 3, 0,-1},
+                            {-2,-2, 1, 6,-3, 0, 2,-1,-1,-3,-4,-1,-3,-3,-1, 0,-1,-4,-3,-3, 4, 1,-1},
+                            { 0,-3,-3,-3, 9,-3,-4,-3,-3,-1,-1,-3,-1,-2,-3,-1,-1,-2,-2,-1,-3,-3,-2},
+                            {-1, 1, 0, 0,-3, 5, 2,-2, 0,-3,-2, 1, 0,-3,-1, 0,-1,-2,-1,-2, 0, 3,-1},
+                            {-1, 0, 0, 2,-4, 2, 5,-2, 0,-3,-3, 1,-2,-3,-1, 0,-1,-3,-2,-2, 1, 4,-1},
+                            { 0,-2, 0,-1,-3,-2,-2, 6,-2,-4,-4,-2,-3,-3,-2, 0,-2,-2,-3,-3,-1,-2,-1},
+                            {-2, 0, 1,-1,-3, 0, 0,-2, 8,-3,-3,-1,-2,-1,-2,-1,-2,-2, 2,-3, 0, 0,-1},
+                            {-1,-3,-3,-3,-1,-3,-3,-4,-3, 4, 2,-3, 1, 0,-3,-2,-1,-3,-1, 3,-3,-3,-1},
+                            {-1,-2,-3,-4,-1,-2,-3,-4,-3, 2, 4,-2, 2, 0,-3,-2,-1,-2,-1, 1,-4,-3,-1},
+                            {-1, 2, 0,-1,-3, 1, 1,-2,-1,-3,-2, 5,-1,-3,-1, 0,-1,-3,-2,-2, 0, 1,-1},
+                            {-1,-1,-2,-3,-1, 0,-2,-3,-2, 1, 2,-1, 5, 0,-2,-1,-1,-1,-1, 1,-3,-1,-1},
+                            {-2,-3,-3,-3,-2,-3,-3,-3,-1, 0, 0,-3, 0, 6,-4,-2,-2, 1, 3,-1,-3,-3,-1},
+                            {-1,-2,-2,-1,-3,-1,-1,-2,-2,-3,-3,-1,-2,-4, 7,-1,-1,-4,-3,-2,-2,-1,-2},
+                            { 1,-1, 1, 0,-1, 0, 0, 0,-1,-2,-2, 0,-1,-2,-1, 4, 1,-3,-2,-2, 0, 0, 0},
+                            { 0,-1, 0,-1,-1,-1,-1,-2,-2,-1,-1,-1,-1,-2,-1, 1, 5,-2,-2, 0,-1,-1, 0},
+                            {-3,-3,-4,-4,-2,-2,-3,-2,-2,-3,-2,-3,-1, 1,-4,-3,-2,11, 2,-3,-4,-3,-2},
+                            {-2,-2,-2,-3,-2,-1,-2,-3, 2,-1,-1,-2,-1, 3,-3,-2,-2, 2, 7,-1,-3,-2,-1},
+                            { 0,-3,-3,-3,-1,-2,-2,-3,-3, 3, 1,-2, 1,-1,-2,-2, 0,-3,-1, 4,-3,-2,-1},
+							{-2,-1, 3, 4,-3, 0, 1,-1, 0,-3,-4, 0,-3,-3,-2, 0,-1,-4,-3,-3, 4, 1,-1},
+							{-1, 0, 0, 1,-3, 3, 4,-2, 0,-3,-3, 1,-1,-3,-1, 0,-1,-3,-2,-2, 1, 4,-1},
+							{ 0,-1,-1,-1,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2, 0, 0,-2,-1,-1,-1,-1,-1}};
 							
 DPmat::DPmat(){}
-DPmat::DPmat(char* input_x, char* input_y)
+DPmat::DPmat(string input_x, string input_y)
 {
 	int i;
-	LEN_OF_X = strlen(input_x);
-	LEN_OF_Y = strlen(input_y);
+	LEN_OF_X = input_x.length();
+	LEN_OF_Y = input_y.length();
 	MAX_X = 0;
 	MAX_Y = 0;
+	MIN_Y = 0;
 	MAX_score = 0;
 
 	x = new int[LEN_OF_X];
 	for(i = 0; i < LEN_OF_X; i++){
-		x[i] = chr2int(input_x[i]);
+		x[i] = chr2int(input_x.at(i));
 	}
 
 	y = new int[LEN_OF_Y];
 	//z = new int[LEN_OF_Y];
 	for(i = 0; i < LEN_OF_Y; i++){
-		y[i] = chr2int(input_y[i]);
-		//z[i] = 0;
+		y[i] = chr2int(input_y.at(i));
 	}
 
 	mat = new Cell* [LEN_OF_X+1];
@@ -76,9 +79,13 @@ int DPmat::chr2int(char chr)
 	else if ((chr == 'W')||(chr == 'w')) return 18;
 	else if ((chr == 'Y')||(chr == 'y')) return 19;
 	else if ((chr == 'V')||(chr == 'v')) return 20;
+	else if ((chr == 'B')||(chr == 'b')) return 21;
+	else if ((chr == 'Z')||(chr == 'z')) return 22;
+	else if ((chr == 'X')||(chr == 'x')) return 23;
 	else
 	{
 		cout << "Input Error! NOT valid aa code" << endl;
+		cout << "Your chr in question: " << chr << endl;
 		exit(0);
 	}
 }
@@ -105,6 +112,9 @@ char DPmat::int2chr(int num)
 	else if (num == 18) return 'W';
 	else if (num == 19) return 'Y';
 	else if (num == 20) return 'V';
+	else if (num == 21) return 'B';
+	else if (num == 22) return 'Z';
+	else if (num == 23) return 'X';
 	else
 	{
 		cout << "Output Error! NOT valid number(0-20)" << endl;
@@ -118,9 +128,10 @@ void DPmat::print_z_chr()
 	string str = z.str();
 	reverse(str.begin(), str.end());
 	cout << "Aligned target sequence: " << endl;
-	cout << str << endl;cout << "maximum optimal local alignment score"
+	cout << str << endl;
+	cout << "maximum optimal local alignment score"
 		 << ": " << MAX_score << endl;
-	cout << "This alignment corresponds to " << MAX_Y - str.length()
+	cout << "This alignment corresponds to " << MIN_Y << "th or " << MIN_Y + 1
 		 << "th to " << MAX_Y << "th residues of reference sequence.\n" << endl;
 }
 
@@ -166,19 +177,19 @@ void DPmat::fill_in_DPmat()
 	}
 	for (i = 1; i < LEN_OF_X+1; i++){
 		for (j = 1; j < LEN_OF_Y+1; j++){
-			score[0] = mat[i][j-1].obtain_score() - 6; // when move right
+			score[0] = mat[i][j-1].obtain_score() - 4; // when move right
 			score[1] = mat[i-1][j-1].obtain_score() + scoring_mat[x[i-1]-1][y[j-1]-1]; // when move diagonal
-			score[2] = mat[i-1][j].obtain_score() - 6; // when move down
+			score[2] = mat[i-1][j].obtain_score() - 4; // when move down
 			// final score is the maximum value of score array
 			final_score = max(max(score[0], score[1]), score[2]);
+			// the flag should point the direction where max score can be obtained
+			for(k = 0; k < 3;k++) flag[k] = (score[k] == final_score);
 			if (final_score < 0) final_score = 0;
 			if (final_score >= MAX_score) {
 				MAX_score = final_score;
 				MAX_X = i;
 				MAX_Y = j;
 			}
-			// the flag should point the direction where max score can be obtained
-			for(k = 0; k < 3;k++) flag[k] = (score[k] == final_score);
 			// determine Cell with final score and new flag
 			mat[i][j].set_scoreflag(final_score, flag);
 		}
@@ -192,6 +203,7 @@ void DPmat::trace_back(int trace_back_i, int trace_back_j)
 	flag = target.obtain_flag();
 
 	if (target.obtain_score() == 0){
+		MIN_Y = trace_back_j;
 		DPmat::print_z_chr();
 		return;
 	}

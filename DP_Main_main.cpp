@@ -13,55 +13,46 @@ int main()
 {
 	ifstream texts[201];
 	string strings[201];
-	char* seq[201];
-	vector <pair <int, int>> score_idx;
+	string line;
+	vector <pair <int, string>> score_idx;
 	int i;
-	//texts[0].open("mainlab_file\\template_001.fa");
-	//getline(texts[0], line);
-	//getline(texts[0], line);
-    // Now begin your useful code
-        // This will just over write the first line read
-    
-	//cout << strings[0] << endl;
-	// texts[0].ignore(100, '\n'); // remove header: first line
-	//string temp((istreambuf_iterator<char>(texts[0])),istreambuf_iterator<char>());
-	//cout << strings[0] << endl;
 
-	for (i = 0; i < 201; i++){
-		if (i == 0){
-			texts[0].open("mainlab_file\\Query.fa");
-			getline(texts[0], strings[0]);
-			getline(texts[0], strings[0]);
-			getline(texts[0], strings[0]);
-		}
-		else{
-			stringstream filename;
-	    	filename << "mainlab_file\\template_00" << i << ".fa";
-    		texts[i].open(filename.str());
-			getline(texts[i], strings[i]);
-			getline(texts[i], strings[i]);
-			getline(texts[i], strings[i]);
+	// import query sequence, and save it in strings[0]
+	texts[0].open("mainlab_file\\Query.fa");
+	getline(texts[0], line); // remove header
+	getline(texts[0], line);
+	strings[0].append(line);
+
+	// import template sequences
+	for (i = 1; i < 201; i++){
+		// first, open files
+		string filename = "template_";
+		char num[5];
+		sprintf(num, "%03d", i);
+	    filename += num;
+    	texts[i].open("mainlab_file\\" + filename + ".fa");
+
+		// remove useless lines including header.
+		while (getline(texts[i], line)){
+			if (line.empty()|line.front() == '>') continue;
+			strings[i].append(line);
 		}
 
-		seq[i] = new char[strings[i].size() + 1];
-		copy(strings[i].begin(), strings[i].end(), seq[i]); // string to char array
-		seq[i][strings[i].size()] = '\0';
-
-		if (i > 0){
-			DPmat SA(seq[i],seq[0]);
-			SA.fill_in_DPmat();
-			score_idx.push_back(make_pair(SA.get_MAX_score(), i));
-		}
+		// Then calculate each template's alignment score
+		// and put it into score_idx vector
+		DPmat SA(strings[i], strings[0]);
+		SA.fill_in_DPmat();
+		score_idx.push_back(make_pair(SA.get_MAX_score(), filename));	
 	}
-	//sort(score_idx.begin(), score_idx.end());
 
-	for (i = 0; i < 200; i++){
-		cout << i+1 << " template_" << score_idx[i].second << " score: " 
+	// sort vector elements with score
+	sort(score_idx.begin(), score_idx.end());
+
+	// print the result in desired form, in descending order
+	for (i = 199; i >= 0; i--){
+		cout << 200 - i << " " << score_idx[i].second << " score: " 
 		<< score_idx[i].first << endl;
 	}
 
 	return 0;
 }
-
-
-

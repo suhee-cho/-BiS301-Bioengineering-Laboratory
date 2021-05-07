@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
+#include <string>
 #include "Cell.h"
 
 using namespace std;
@@ -12,7 +13,7 @@ class DPmat
 {
 public:
 	DPmat();
-	DPmat(char* input_x, char* input_y);
+	DPmat(string input_x, string input_y);
 	void print_z_chr();
 	void fill_in_DPmat();
 	void print_mat();
@@ -32,7 +33,6 @@ public:
 private:
 	int* x;
 	int* y;
-	//int* z;
 	stringstream z;
 
 	int LEN_OF_X;
@@ -40,6 +40,7 @@ private:
 
 	int MAX_X;
 	int MAX_Y;
+	int MIN_Y;
 	int MAX_score;
 
 	Cell** mat;
