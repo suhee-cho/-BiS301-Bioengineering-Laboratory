@@ -26,6 +26,7 @@ public:
 
 	int get_MAX_X() { return MAX_X; }
 	int get_MAX_Y() { return MAX_Y; }
+	int get_MIN_Y() { return MIN_Y; }
 	int get_MAX_score() { return MAX_score; }
 
 	~DPmat();

@@ -15,6 +15,7 @@ int main()
 	string strings[201];
 	string line;
 	vector <pair <int, string>> score_idx;
+	// vector <pair <int, int>> st_ed; // for finding coverage of template
 	int i;
 
 	// import query sequence, and save it in strings[0]
@@ -42,7 +43,8 @@ int main()
 		// and put it into score_idx vector
 		DPmat SA(strings[i], strings[0]);
 		SA.fill_in_DPmat();
-		score_idx.push_back(make_pair(SA.get_MAX_score(), filename));	
+		score_idx.push_back(make_pair(SA.get_MAX_score(), filename));
+		// st_ed.push_back(make_pair(SA.get_MIN_Y(), SA.get_MAX_Y()));
 	}
 
 	// sort vector elements with score
@@ -52,7 +54,15 @@ int main()
 	for (i = 0; i < 10; i++){
 		cout << i << " " << score_idx[199-i].second << " score: " 
 		<< score_idx[199-i].first << endl;
+		///////////// find coverage of template //////////////
+		/*
+		cout << "starts at: " << st_ed[199-i].first + 1
+		<< "th and ends at: " << st_ed[199-i].second << "th." << endl;
+		cout << "So it covers " << (st_ed[199-i].second - st_ed[199-i].first)*100.0/strings[0].length()
+		<< "% of query sequence." << endl; 
+		cout << "--------------------------------------" << endl;
+		*/
 	}
-
+	
 	return 0;
 }
