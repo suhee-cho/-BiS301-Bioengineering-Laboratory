@@ -16,18 +16,22 @@ int main()
 	int i;
 
 	for (i = 0; i < 6; i++){
+		// import query sequence
 		if (i == 0){
 			texts[i].open("Query.txt");
 		}
+		// import template sequences
 		else {
 			stringstream filename;
 	    	filename << "templates_0" << i << ".txt";
     		texts[i].open(filename.str());
 		}
+		// remove useless lines
 		while (getline(texts[i], line)){
 			if (line.empty()|line.front() == '>') continue;
 			strings[i].append(line);
 		}
+		// print results
 		if (i > 0){
 			DPmat SA(strings[i],strings[0]);
 			SA.fill_in_DPmat();

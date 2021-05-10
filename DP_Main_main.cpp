@@ -43,6 +43,7 @@ int main()
 		// and put it into score_idx vector
 		DPmat SA(strings[i], strings[0]);
 		SA.fill_in_DPmat();
+		if (i == 11) SA.print_mat();
 		score_idx.push_back(make_pair(SA.get_MAX_score(), filename));
 		// st_ed.push_back(make_pair(SA.get_MIN_Y(), SA.get_MAX_Y()));
 	}
@@ -54,7 +55,8 @@ int main()
 	for (i = 0; i < 10; i++){
 		cout << i << " " << score_idx[199-i].second << " score: " 
 		<< score_idx[199-i].first << endl;
-		///////////// find coverage of template //////////////
+		///////////////// out of scope of mainlab //////////////////
+		///////////// calculate coverage of template //////////////
 		/*
 		cout << "starts at: " << st_ed[199-i].first + 1
 		<< "th and ends at: " << st_ed[199-i].second << "th." << endl;
