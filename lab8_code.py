@@ -26,7 +26,7 @@ class Word:
     def get_spelling(self):
         return list(self.name)
 
-
+################# This part is for prelab #################
 def create_tagging_table(table, target, reference): 
     # Let's start!
     print("create tagging table... ", end = '')
@@ -56,12 +56,14 @@ def create_tagging_table(table, target, reference):
                 # First, tidy the line.
                 line = line.strip()
                 line = line.replace(".", "") # remove period(.)
+                line = line.lower() # Let's convert string to lowercase for easy comparison.
                 words = line.split()
 
                 # Then, loop through the target words.
                 for i in range(len(targets[id_val])):
                     # target word may contain space, so split it.
-                    target_list = targets[id_val][i].split()
+                    target_word = targets[id_val][i].lower()
+                    target_list = target_word.split()
 
                     # Then, utilize try-except statement.
                     # If the word does not match with gene name,
@@ -92,6 +94,46 @@ d_list = create_tagging_table(D_tagging_table, P_syno, P_literature)
 G_tagging_table.close()
 D_tagging_table.close()
 
+
+
+################# This part is for mainlab #################
+
+###########################################################
+########## for those who start from the middle ############
+########### If you already have tagging tables, ###########
+######### You can just launch from the part below! ########
+############ Making table takes too much time! ############
+###########################################################
+class Word:
+    def __init__(self, name, id, PMID, s_idx, tot_tok, loc_tok):
+        self.name = name.lower()
+        self.id = id
+        self.PMID = PMID
+        self.s_idx = s_idx
+        self.tot_tok = tot_tok
+        self.loc_tok = loc_tok
+    # simple method to create list of alphabets.
+    def get_spelling(self):
+        return list(self.name)
+
+G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
+D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
+
+g_list = []
+d_list = []
+
+def make_Word(target, result):
+    for line in target:
+        if 'Name' in line: continue
+        line = line.strip()
+        words_list = line.split('\t')
+        result.append(Word('no data', words_list[0], int(words_list[1]), int(words_list[2]), int(words_list[3]), int(words_list[4])))
+    return result
+
+g_list = make_Word(G_tagging_table, g_list)
+d_list = make_Word(D_tagging_table, d_list)
+#########################################################
+
 def score_function(word_1, word_2):
     # if words are not in same abstract, score is 0.
     if word_1.PMID != word_2.PMID: return 0
@@ -100,11 +142,13 @@ def score_function(word_1, word_2):
     # sen_var represents who many sentences are b/w two words.
     if (word_1.s_idx == word_2.s_idx): # when two words are three sentences far..
         tok_num = 5*(word_1.tot_tok)/abs(word_1.loc_tok - word_2.loc_tok)
-        sen_var = 400
-    else: 
-        sen_var = 300/abs(word_1.s_idx - word_2.s_idx)
+        sen_var = 200
+    elif (abs(word_1.s_idx - word_2.s_idx) == 1):
+        sen_var = 100
         tok_num = 0
-    if (abs(word_1.s_idx - word_2.s_idx) > 4): sen_var = 50
+    else:
+        sen_var = 50
+        tok_num = 0
     # sp_sim represents spelling similarity.
     spell_1 = word_1.get_spelling() # get list of characters of word_1
     spell_2 = word_2.get_spelling() # get list of characters of word_2
@@ -112,23 +156,25 @@ def score_function(word_1, word_2):
     if (len(spell_1) > len(spell_2)):
         sp_sim = float(50*len(list(set(spell_1).intersection(spell_2)))/len(spell_1))
     else: sp_sim = float(50*len(list(set(spell_2).intersection(spell_1)))/len(spell_2))
-    print("sen_var: " + str(sen_var))
-    # print("sp_sim: ", sp_sim)
-    # print("tok_num: ", tok_num)
     return sen_var + tok_num + sp_sim
 
 # calculate the scores of each and save them in dictionary.
 gene_score_dict = dict()
 for gene in g_list:
     for dis in d_list:
-        if gene.id in gene_score_dict.keys(): gene_score_dict[gene.id] += score_function(dis, gene)
-        else: gene_score_dict[gene.id] = score_function(dis, gene)
+        if gene.id in gene_score_dict.keys():
+            gene_score_dict[gene.id].append(score_function(dis, gene))
+        else: gene_score_dict[gene.id] = [score_function(dis, gene)]
 
 gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt","w+", encoding="utf-8")
 gene_and_score.write("Gene\tscore\n")
 
+confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt","w+", encoding="utf-8")
+
 for gene in gene_score_dict.keys():
-    gene_and_score.write(str(gene) + "\t" + str(gene_score_dict[gene]) + "\n")
+    final_score = len(gene_score_dict[gene]) + (sum(gene_score_dict[gene])/len(gene_score_dict[gene]))
+    gene_and_score.write(str(gene) + "\t" + str(final_score) + "\n")
+    if final_score > 0: confirmed.write(str(gene) + "\n")
 
 gene_and_score.close()
-
+confirmed.close()
