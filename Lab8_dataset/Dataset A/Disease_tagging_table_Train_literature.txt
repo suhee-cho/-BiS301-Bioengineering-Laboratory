@@ -1,11 +1,18 @@
 DiseaseName	PMID	Sentence index	The # of total tokens	Location of token
 parkinson Disease	22278152	2	12	11
+parkinson Disease	22278152	2	12	11
 parkinson Disease	22268009	2	17	8
 parkinson Disease	22232350	2	16	14
+parkinson Disease	22232350	2	16	14
 parkinson Disease	22204027	2	8	6
+parkinson Disease	22204027	2	8	6
+parkinson Disease	22083847	2	8	4
 parkinson Disease	22083847	2	8	4
 parkinson Disease	22034770	2	5	4
 parkinson Disease	21994149	2	12	6
 parkinson Disease	21697709	2	11	10
+parkinson Disease	21697709	2	11	10
 parkinson Disease	21674693	2	12	8
+parkinson Disease	21674693	2	12	8
+parkinson Disease	21663383	6	30	22
 parkinson Disease	21663383	6	30	22

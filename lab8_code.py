@@ -8,7 +8,7 @@ G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng 
 G_tagging_table.write("GeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
 
 # create new file for disease tagging table, and write column names in it
-D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Test_literature.txt","w+", encoding="utf-8")
+D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
 D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
 
 
@@ -16,7 +16,7 @@ D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\
 # class has name, id, PMID, s_idx, tot_tok, loc_tok attributes.
 class Word:
     def __init__(self, name, id, PMID, s_idx, tot_tok, loc_tok):
-        self.name = name
+        self.name = name.lower()
         self.id = id
         self.PMID = PMID
         self.s_idx = s_idx
@@ -28,6 +28,9 @@ class Word:
 
 
 def create_tagging_table(table, target, reference): 
+    # Let's start!
+    print("create tagging table... ", end = '')
+
     # create dictionary of "target".
     # with key as a gene (or disease) id_val, and values as its synonym.
     targets = dict()
@@ -35,81 +38,97 @@ def create_tagging_table(table, target, reference):
         line = line.strip()
         line = line.split('\t')
         targets[line[0]] = line[1:]
-    # go through lines of abstracts
-    line_idx = 1 # record line number in each abstract
-    word_list = []
+
+    # Now, go through lines of abstracts.
+    line_idx = 1 # record line number in each abstract.
+    word_list = [] # it will contain found words in Word class.
     for line in reference:
-        if "PMID" in line: # if line starts with PMID, it means the line if of PMID
+        if "PMID" in line: # if line starts with PMID, it means the line is of PMID.
             PMID = line.split(": ")[1]
-            PMID = PMID.strip() # save PMID
-            line_idx = 1 # reset line counting
+            PMID = PMID.strip() # save PMID.
+            line_idx = 1 # reset line count.
             # print("new PMID")
         else:
+            # Among the lines which are about main contents,
+            # find gene names saved in dictionary as a values.
             line_idx += 1
-            line = line.strip()
-            line = line.replace(".", "") # remove period(.)
-            words = line.split()
             for id_val in targets.keys():
-                # find gene name saved in dictionary as a values
-                # utilize try-except statement. If the word does not match with gene name,
-                # error occurs and the data of the word will not be saved
+                # First, tidy the line.
+                line = line.strip()
+                line = line.replace(".", "") # remove period(.)
+                words = line.split()
+
+                # Then, loop through the target words.
                 for i in range(len(targets[id_val])):
+                    # target word may contain space, so split it.
+                    target_list = targets[id_val][i].split()
+
+                    # Then, utilize try-except statement.
+                    # If the word does not match with gene name,
+                    # error occurs and the data of the word will not be saved.
                     try:
-                        # find the index of word if it exists
-                        word_idx = words.index(targets[id_val][i])
-                        row = str(id_val)+"\t"+str(PMID)+"\t"+str(line_idx)+"\t"+str(len(words))+'\t'+str(word_idx+1)+'\n'
-                        table.write(row) # if gene name is identified, record it
-                        # if it does exist, save it at word_list list as a Word class
-                        word_list.append(Word(words[word_idx], id_val, PMID, line_idx, len(words), word_idx+1))
-                        # create text row to be saved in tagging table
-                    except: pass # if the word does not exist in sentence, pass
-    print("create tagging table... done.")
+                        # find the index of word if it exists.
+                        word_idx = words.index(target_list[0])
+                        word_match = True
+                        # determine whether the whole word matches.
+                        for j in range(len(target_list)):
+                            if (target_list[j] != words[word_idx+j]):
+                                word_match = False
+                                break
+                        if word_match: # if we find the right word...
+                            row = str(id_val)+"\t"+str(PMID)+"\t"+str(line_idx)+"\t"+str(len(words))+'\t'+str(word_idx+1)+'\n'
+                            table.write(row) # record it!
+                            # and save it at word_list list as a Word class.
+                            word_list.append(Word(words[word_idx], id_val, PMID, line_idx, len(words), word_idx+1))
+                    except: pass # if the word does not exist in sentence, try next word.
+    print("DONE.")
     return word_list
 
-# complete tagging table and get list of detected word objects
+# complete tagging table and get list of detected word objects.
 g_list = create_tagging_table(G_tagging_table, gene_dictionary, P_literature)
 d_list = create_tagging_table(D_tagging_table, P_syno, P_literature)
 
-# finally, close file
+# finally, close files.
 G_tagging_table.close()
 D_tagging_table.close()
 
 def score_function(word_1, word_2):
-    # if words are not in same abstract, score is 0
+    # if words are not in same abstract, score is 0.
     if word_1.PMID != word_2.PMID: return 0
-    # if words are not in same or very next sentence, score is 0
-    if abs(word_1.s_idx - word_2.s_idx) > 2: return 0
-    # tok_num represents number of tokens between word_1 and word_2
-    # sen_var represents whether words are in same sentence or very next sentence
-    if (word_1.s_idx > word_2.s_idx): # when word_2 locates in former sentence..
-        tok_num = word_1.loc_tok + (word_2.tot_tok - word_2.loc_tok)
-        sen_var = 1
-    elif (word_1.s_idx < word_2.s_idx): # when word_1 locates in former sentence..
-        tok_num = (word_1.tot_tok - word_1.loc_tok) + word_2.loc_tok
-        sen_var = 1
-    else:
-        tok_num = abs(word_1.loc_tok - word_2.loc_tok)
-        sen_var = 2
-    # sp_sim represents spelling similarity
-    # 1 <= sp_sim <= 2
+    # tok_num is an additional score for when words are in same sentence.
+    # it represents how near the word_1 and word_2 are.
+    # sen_var represents who many sentences are b/w two words.
+    if (word_1.s_idx == word_2.s_idx): # when two words are three sentences far..
+        tok_num = 5*(word_1.tot_tok)/abs(word_1.loc_tok - word_2.loc_tok)
+        sen_var = 400
+    else: 
+        sen_var = 300/abs(word_1.s_idx - word_2.s_idx)
+        tok_num = 0
+    if (abs(word_1.s_idx - word_2.s_idx) > 4): sen_var = 50
+    # sp_sim represents spelling similarity.
     spell_1 = word_1.get_spelling() # get list of characters of word_1
     spell_2 = word_2.get_spelling() # get list of characters of word_2
+    # calculate the ratio of the common characters between two words.
     if (len(spell_1) > len(spell_2)):
-        # calculate the ratio of the common characters between two words,
-        # multiply 0.1, and add 1
-        sp_sim = 1 + 0.1*len(list(set(spell_1).intersection(spell_2)))/len(spell_1)  
-    return (sen_var*sp_sim)/tok_num
+        sp_sim = float(50*len(list(set(spell_1).intersection(spell_2)))/len(spell_1))
+    else: sp_sim = float(50*len(list(set(spell_2).intersection(spell_1)))/len(spell_2))
+    print("sen_var: " + str(sen_var))
+    # print("sp_sim: ", sp_sim)
+    # print("tok_num: ", tok_num)
+    return sen_var + tok_num + sp_sim
 
-gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt","w+", encoding="utf-8")
-gene_and_score.write("Gene\tscore\n")
-
+# calculate the scores of each and save them in dictionary.
 gene_score_dict = dict()
 for gene in g_list:
     for dis in d_list:
         if gene.id in gene_score_dict.keys(): gene_score_dict[gene.id] += score_function(dis, gene)
         else: gene_score_dict[gene.id] = score_function(dis, gene)
 
+gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt","w+", encoding="utf-8")
+gene_and_score.write("Gene\tscore\n")
+
 for gene in gene_score_dict.keys():
     gene_and_score.write(str(gene) + "\t" + str(gene_score_dict[gene]) + "\n")
 
 gene_and_score.close()
+
