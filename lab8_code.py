@@ -2,6 +2,7 @@ train = (input("test or train?: ") == 'train')
 
 import os
 # Before we start, for the sake of convenience... remove redundant files
+# If you want to analyze files other than about PD and ALS, change the path below.
 if train: 
     if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt"):
         os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt")
@@ -45,9 +46,9 @@ else:
     D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Test_literature.txt","w+", encoding="utf-8")
     D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
     # ...and extended versions of them.
-    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Test_literature.txt","w+", encoding="utf-8")
     E_G_tagging_table.write("Name\tGeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
-    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Test_literature.txt","w+", encoding="utf-8")
     E_D_tagging_table.write("Name\tDiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
 
 # create class to record matched words in abstracts.
@@ -97,11 +98,14 @@ def create_tagging_table(table, E_table, target, reference, Disease):
                 # First, tidy the line.
                 line = line.strip()
                 line = line.replace(".", "") # remove period(.)
+                line = line.replace(",", "")
                 if Disease: line = line.lower() # Let's convert string to lowercase for easy comparison.
-                words = line.split()
+                import re
+                words = re.split('\s|:',line)
 
                 # Then, loop through the target words.
                 for i in range(len(targets[id_val])):
+                    # for disease detection, ignore 대소문자.
                     if Disease: target_word = targets[id_val][i].lower()
                     else: target_word = targets[id_val][i]
                     # target word may contain space, so split it.
@@ -119,18 +123,23 @@ def create_tagging_table(table, E_table, target, reference, Disease):
                             if (target_list[j] != words[word_idx+j]):
                                 word_match = False
                                 break
-                        if word_match: # if we find the right word...
-                            row = str(id_val)+"\t"+str(PMID)+"\t"+str(line_idx)+"\t"+str(len(words))+'\t'+str(word_idx+1)
-                            table.write(row+'\n') # record it!
-                            if len(targets[id_val])==1: E_table.write(target_word+'\t'+row+'\t'+str(2)+'\n')
-                            else: E_table.write(target_word+'\t'+row+'\t'+str(i)+'\n')
-                            # and save it at word_list list as a Word class.
-                            word_list.append(Word(words[word_idx], id_val, PMID, line_idx, len(words), word_idx+1, i))
-                            if not Disease & (len(targets[id_val]!=1)):
-                                try:
-                                    g_occurance[id_val].append(i)
-                                except: g_occurance[id_val] = [i]
-                    except: pass # if the word does not exist in sentence, try next word.
+                    except: 
+                        try: # words could be covered with brackets.
+                            if len(target_list == 1):
+                                word_idx = words.index('('+target_list[0]+')')
+                                word_match = True
+                        except: continue # if the word does not exist in sentence, try next word.
+                    if word_match: # if we find the right word...
+                        row = str(id_val)+"\t"+str(PMID)+"\t"+str(line_idx)+"\t"+str(len(words))+'\t'+str(word_idx+1)
+                        table.write(row+'\n') # record it!
+                        if len(targets[id_val])==1: E_table.write(target_word+'\t'+row+'\t'+str(2)+'\n')
+                        else: E_table.write(target_word+'\t'+row+'\t'+str(i)+'\n')
+                        # and save it at word_list list as a Word class.
+                        word_list.append(Word(words[word_idx], id_val, PMID, line_idx, len(words), word_idx+1, i))
+                        if not Disease:
+                            try:
+                                g_occurance[id_val].append(i)
+                            except: g_occurance[id_val] = [i]
     print("DONE.")
     return word_list
 
@@ -166,6 +175,7 @@ class Word:
     # simple method to create list of alphabets.
     def get_spelling(self):
         return list(self.name)
+
 train = (input("test or train?: ") == 'train')
 
 if train:
@@ -215,16 +225,34 @@ def score_function(word_1, word_2):
     spell_2 = word_2.get_spelling() # get list of characters of word_2
     # calculate the ratio of the common characters between two words.
     if (len(spell_1) > len(spell_2)):
-        sp_sim = float(50*len(list(set(spell_1).intersection(spell_2)))/len(spell_1))
-    else: sp_sim = float(50*len(list(set(spell_2).intersection(spell_1)))/len(spell_2))
+        sp_sim = float(5*len(list(set(spell_1).intersection(spell_2)))/len(spell_1))
+    else: sp_sim = float(5*len(list(set(spell_2).intersection(spell_1)))/len(spell_2))
     return sen_var + tok_num + sp_sim
 
 # Second checkpoint
 # if you only modify scoring functinon,
 # start from here 
 import os
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt")
+if train:
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_gene_and_score.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_gene_and_score.txt")
+    
+    gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_gene_and_score.txt","w+", encoding="utf-8")
+    gene_and_score.write("Gene\tscore\n")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_confirmed_gene_list.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_confirmed_gene_list.txt")
+    
+    confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\train_confirmed_gene_list.txt","w+", encoding="utf-8")
+else:
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_gene_and_score.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_gene_and_score.txt")
+    
+    gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_gene_and_score.txt","w+", encoding="utf-8")
+    gene_and_score.write("Gene\tscore\n")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_confirmed_gene_list.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_confirmed_gene_list.txt")
+    
+    confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\test_confirmed_gene_list.txt","w+", encoding="utf-8")
 
 # calculate the scores of each and save them in dictionary.
 gene_score_dict = dict()
@@ -233,34 +261,41 @@ for gene in g_list:
         # if the frequency of two synonyms of gene differ too much, exclude the gene.
         abb_1 = g_occurance[gene.id].count(0)/float(len(g_occurance[gene.id]))
         abb_2 = g_occurance[gene.id].count(1)/float(len(g_occurance[gene.id]))
-        if (len(g_occurance[gene.id]) >= 50)&(abs(abb_1-abb_2)>0.99):
+        if (len(g_occurance[gene.id]) >= 50)&(abs(abb_1-abb_2)>0.95):
             continue
         score = score_function(dis, gene)
         if score == 0: continue
         if gene.id in gene_score_dict.keys():
-            gene_score_dict[gene.id].append(score)
-        else: gene_score_dict[gene.id] = [score]
+            if gene.PMID in gene_score_dict[gene.id].keys():
+                gene_score_dict[gene.id][gene.PMID].append(score)
+                continue
+        gene_score_dict[gene.id] = {gene.PMID: [score]}
 
-gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt","w+", encoding="utf-8")
-gene_and_score.write("Gene\tscore\n")
-
+scores = dict()
 for gene in gene_score_dict.keys():
+    for gene_id, score_dict in gene_score_dict.items():
+        scores[gene_id] = []
+        for PMID, score in score_dict.items():
+            scores[gene_id].append(float(sum(score))/len(score))
+
+for gene, score in scores.items():
+    scores[gene] = sum(score)
+    gene_and_score.write(str(gene) + "\t" + str(scores[gene_id]) + "\n")
+
+
     # Let's set final score be the average of 상위 50% score values.
-    score_list = list(gene_score_dict[gene])
-    score_list.sort(reverse = True)
-    list_len = len(score_list)
+    #score_list = list(gene_score_dict[gene])
+    #score_list.sort(reverse = True)
+    #list_len = len(score_list)
     # cut_off = int(0.2*list_len)
-    final_score = sum(score_list[:int(list_len/2)])/(int(list_len/2)+1)
+    #final_score = sum(score_list[:int(list_len/2)])/(int(list_len/2)+1)
     # final_score = (sum(gene_score_dict[gene])/len(gene_score_dict[gene]))
-    gene_score_dict[gene] = final_score
-    gene_and_score.write(str(gene) + "\t" + str(final_score) + "\n")
+    #gene_score_dict[gene] = final_score
+    #gene_and_score.write(str(gene) + "\t" + str(final_score) + "\n")
+
 gene_and_score.close()
 
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt")
-
-confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt","w+", encoding="utf-8")
-
+gene_score_dict = scores
 scores = list(gene_score_dict.values())
 scores.sort()
 threshold = scores[int(len(scores)*0.3)]
