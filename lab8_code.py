@@ -1,32 +1,54 @@
+train = (input("test or train?: ") == 'train')
+
 import os
-# Before we start, for the sake of convenience...
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt")
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt")
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt")
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt")
-
-# Open given files.
-P_literature = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Parkinson_literature.txt", 'r', encoding="utf-8").readlines()
-P_syno = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Parkinson_syno_dictionary.txt", 'r', encoding="utf-8")
-gene_dictionary = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_dictionary.txt", 'r', encoding="utf-8").readlines()
-
-# create new file for gene tagging table, and write column names in it.
-G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
-G_tagging_table.write("GeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
-
-# create new file for disease tagging table, and write column names in it.
-D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
-D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
-
-# ...and extended versions of them.
-E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
-E_G_tagging_table.write("Name\tGeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
-E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
-E_D_tagging_table.write("Name\tDiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
+# Before we start, for the sake of convenience... remove redundant files
+if train: 
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt")
+    # Open given files.
+    P_literature = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Parkinson_literature.txt", 'r', encoding="utf-8").readlines()
+    P_syno = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Parkinson_syno_dictionary.txt", 'r', encoding="utf-8")
+    gene_dictionary = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_dictionary.txt", 'r', encoding="utf-8").readlines()
+    # create new file for gene tagging table, and write column names in it.
+    G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    G_tagging_table.write("GeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
+    # create new file for disease tagging table, and write column names in it.
+    D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
+    # ...and extended versions of them.
+    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_G_tagging_table.write("Name\tGeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
+    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_D_tagging_table.write("Name\tDiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
+else:
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Test_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Test_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Test_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Test_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Test_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Test_literature.txt")
+    if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Test_literature.txt"):
+        os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Test_literature.txt")
+    P_literature = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\ALS_literature.txt", 'r', encoding="utf-8").readlines()
+    P_syno = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\ALS_syno_dictionary.txt", 'r', encoding="utf-8")
+    gene_dictionary = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_dictionary.txt", 'r', encoding="utf-8").readlines()
+    # create new file for gene tagging table, and write column names in it.
+    G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Gene_tagging_table_Test_literature.txt","w+", encoding="utf-8")
+    G_tagging_table.write("GeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
+    # create new file for disease tagging table, and write column names in it.
+    D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\Disease_tagging_table_Test_literature.txt","w+", encoding="utf-8")
+    D_tagging_table.write("DiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\n")
+    # ...and extended versions of them.
+    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_G_tagging_table.write("Name\tGeneName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
+    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","w+", encoding="utf-8")
+    E_D_tagging_table.write("Name\tDiseaseName\tPMID\tSentence index\tThe # of total tokens\tLocation of token\twhich abbreviation\n")
 
 # create class to record matched words in abstracts.
 # class has name, id, PMID, s_idx, tot_tok, loc_tok attributes.
@@ -144,9 +166,14 @@ class Word:
     # simple method to create list of alphabets.
     def get_spelling(self):
         return list(self.name)
+train = (input("test or train?: ") == 'train')
 
-E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
-E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
+if train:
+    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
+    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Train_literature.txt","r", encoding="utf-8").readlines()
+else:
+    E_G_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Gene_tagging_table_Test_literature.txt","r", encoding="utf-8").readlines()
+    E_D_tagging_table = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\E_Disease_tagging_table_Test_literature.txt","r", encoding="utf-8").readlines()
 
 g_list = []
 d_list = []
@@ -198,8 +225,6 @@ def score_function(word_1, word_2):
 import os
 if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt"):
     os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt")
-if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt"):
-    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt")
 
 # calculate the scores of each and save them in dictionary.
 gene_score_dict = dict()
@@ -208,27 +233,39 @@ for gene in g_list:
         # if the frequency of two synonyms of gene differ too much, exclude the gene.
         abb_1 = g_occurance[gene.id].count(0)/float(len(g_occurance[gene.id]))
         abb_2 = g_occurance[gene.id].count(1)/float(len(g_occurance[gene.id]))
-        if (len(g_occurance[gene.id]) >= 50)&(abs(abb_1-abb_2)>0.98):
+        if (len(g_occurance[gene.id]) >= 50)&(abs(abb_1-abb_2)>0.99):
             continue
+        score = score_function(dis, gene)
+        if score == 0: continue
         if gene.id in gene_score_dict.keys():
-            gene_score_dict[gene.id].append(score_function(dis, gene))
-        else: gene_score_dict[gene.id] = [score_function(dis, gene)]
+            gene_score_dict[gene.id].append(score)
+        else: gene_score_dict[gene.id] = [score]
 
 gene_and_score = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\gene_and_score.txt","w+", encoding="utf-8")
 gene_and_score.write("Gene\tscore\n")
 
-confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt","w+", encoding="utf-8")
-
 for gene in gene_score_dict.keys():
-    final_score = len(gene_score_dict[gene]) + (sum(gene_score_dict[gene])/len(gene_score_dict[gene]))
+    # Let's set final score be the average of 상위 50% score values.
+    score_list = list(gene_score_dict[gene])
+    score_list.sort(reverse = True)
+    list_len = len(score_list)
+    # cut_off = int(0.2*list_len)
+    final_score = sum(score_list[:int(list_len/2)])/(int(list_len/2)+1)
+    # final_score = (sum(gene_score_dict[gene])/len(gene_score_dict[gene]))
     gene_score_dict[gene] = final_score
     gene_and_score.write(str(gene) + "\t" + str(final_score) + "\n")
-    if final_score > 15000: confirmed.write(str(gene) + "\n")
-
-#scores = list(gene_score_dict.values()).sort()
-
-# 
-    
-
 gene_and_score.close()
+
+if os.path.exists("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt"):
+    os.remove("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt")
+
+confirmed = open("C:\\Users\\suhee\\Documents\\2021_Spring\\BiS301 Bioeng Lab1\\git_code\\lab8\\Lab8_dataset\\Dataset A\\confirmed_gene_list.txt","w+", encoding="utf-8")
+
+scores = list(gene_score_dict.values())
+scores.sort()
+threshold = scores[int(len(scores)*0.3)]
+for gene, score in gene_score_dict.items():
+    if score >= threshold:
+        confirmed.write(str(gene) + "\n")
+
 confirmed.close()
