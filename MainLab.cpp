@@ -176,14 +176,14 @@ double DecisionTree::findCutoffValue(string gene, list<unsigned int> sampleList)
     }
 
     /////////////////// method 1: default method /////////////////////
-    /*
+    
     if (cnt_n != 0){
         if (cnt_c != 0) return (SuM_norm/cnt_n + SuM_cancr/cnt_c)/2;
-        return SuM_norm/(2*cnt_n);
+        return SuM_norm/cnt_n;
     }
-    return SuM_cancr/(2*cnt_c);
-    */
-
+    return SuM_cancr/cnt_c;
+    
+   /*
     ////////////////// method 2: use std //////////////////
     if (cnt_n != 0) {
         norm_avr = SuM_norm/cnt_n;
@@ -206,7 +206,7 @@ double DecisionTree::findCutoffValue(string gene, list<unsigned int> sampleList)
         return (norm_std*norm_avr + cancr_std*cancr_avr)/(norm_std + cancr_std);  
     }
     else return SuM_cancr/cnt_c;
-    
+    */
 };
 
 void DecisionTree::testCutoff(string gene, list<unsigned int> sampleList){
@@ -397,17 +397,14 @@ void DecisionTree::makeDecisionTree(Node* n){
             countNum_Disease++; //counting the total number of disease sample
         }
     }
-    //cout << "p1" << endl;
     if (countNum_Total == countNum_Normal) { //if all the samples are normal
         n->cls.clsResult = 1; //change the classfication status to 'normal'
-        //cout << "leaf reached." << endl;
         return; //and now terminate
     } else if (countNum_Total == countNum_Disease) { //if all the samples are disease samples
         n->cls.clsResult = 2; //change the classification status to 'disease'
-        //cout << "leaf reached." << endl;
         return; //and now finish the loop
     }
-// if (sizeof(n->data.clsGeneList) == 0)
+
     if (n->data.clsGeneList.empty()) { //if there is no more gene to be used
         if (countNum_Normal > countNum_Total - countNum_Normal) { //and if the number of normal samples are more than the disease samples
             n->cls.clsResult = 1; //change the classification status to 'normal'
@@ -434,7 +431,7 @@ void DecisionTree::makeDecisionTree(Node* n){
             }
         }
         n->cls.clsGene = Optimal_Gene; //[MainLabProblem] the Optimal_Gene, which has the maximum information gain, will be the classification gene
-        n->cls.cutoffValue = max_Gene; //[MainLabProblem] find the cut off value for the gene
+        n->cls.cutoffValue = findCutoffValue(Optimal_Gene, n->data.sampleList); //[MainLabProblem] find the cut off value for the gene
 
         list<unsigned int> lowstring; //this will save all the low expressed samples
         list<unsigned int> highstring; //this will save all the high expressed samples
@@ -461,8 +458,6 @@ void DecisionTree::makeDecisionTree(Node* n){
 };
 
 bool DecisionTree::predSample(unsigned int sampleNo, Node* n){
-
-    // Your Code
     bool torf;
     if (n->cls.clsResult != 0) { //if the current node is a leaf node
         if (n->cls.clsResult == 1) { //and if the current node says normal,
@@ -574,6 +569,7 @@ int main(){
     /*************************************************************************************/
     // This is Test for Prelab. Run this part and check it to TA before starting main lab.
     // After that you can erase this part
+    /*
     dt.testReadFile();
     dt.testDEGList(deg);
 
@@ -591,6 +587,7 @@ int main(){
     cov_l.push_back(tmp_cov*0.5);
     cov_l.push_back(tmp_cov*1.5);
     dt.testInfoGain(*it, cov_l, l);
+    */
     /*************************************************************************************/
 
     /* 2. Prepare data part of root node for a parameter of function that generates decision tree */
