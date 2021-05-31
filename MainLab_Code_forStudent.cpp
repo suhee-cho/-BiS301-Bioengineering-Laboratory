@@ -389,28 +389,32 @@ void DecisionTree::makeDecisionTree(Node* n){
     int countNum_Total = 0; //number of total sample
     int countNum_Disease = 0; //number of disease sample
     for (S_iterator = n->data.sampleList.begin();
-         S_iterator != n->data.sampleList.end(); S_iterator++) {
-        countNum_Total++; //counting the toal number of the sample
+        S_iterator != n->data.sampleList.end(); S_iterator++) {
+        countNum_Total++; //counting the total number of the sample
         if (sampleCls.find(*S_iterator)->second) {
             countNum_Normal++; //counting the total number of normal sample
         } else {
             countNum_Disease++; //counting the total number of disease sample
         }
     }
+    //cout << "p1" << endl;
     if (countNum_Total == countNum_Normal) { //if all the samples are normal
         n->cls.clsResult = 1; //change the classfication status to 'normal'
+        //cout << "leaf reached." << endl;
         return; //and now terminate
     } else if (countNum_Total == countNum_Disease) { //if all the samples are disease samples
         n->cls.clsResult = 2; //change the classification status to 'disease'
+        //cout << "leaf reached." << endl;
         return; //and now finish the loop
     }
-
-    if (sizeof(n->data.clsGeneList) == 0) { //if there is no more gene to be used
+// if (sizeof(n->data.clsGeneList) == 0)
+    if (n->data.clsGeneList.empty()) { //if there is no more gene to be used
         if (countNum_Normal > countNum_Total - countNum_Normal) { //and if the number of normal samples are more than the disease samples
             n->cls.clsResult = 1; //change the classification status to 'normal'
         } else { //if not,
             n->cls.clsResult = 2; //change the classification status to 'disease'
         }
+        //cout << "leaf reached." << endl;
         return;
     } else {
         n->cls.clsResult = 0; //if the case above all does not fit, this node shall go more. Set the classification status to 'NULL'
@@ -420,17 +424,17 @@ void DecisionTree::makeDecisionTree(Node* n){
         double max_Gene = 0; //maximum value of information gain of the gene
         // double current_Gene = 0; // unused
         for (D_iterator = n->data.clsGeneList.begin();
-             D_iterator !=
-             n->data.clsGeneList.end(); D_iterator++) { //using the iterator, read all the genes in DEG list of the current node
-            double temp_COV = _____________________________ //[MainLabProblem] find the cut off value for the gene
-            double current_Gene = _______________________; //[MainLabProblem] find the information gain for the gene
-            if (max_Gene < current_Gene) {
+            D_iterator !=
+            n->data.clsGeneList.end(); D_iterator++) { //using the iterator, read all the genes in DEG list of the current node
+            double temp_COV = findCutoffValue(*D_iterator, n->data.sampleList); //[MainLabProblem] find the cut off value for the gene
+            double current_Gene = getInfoGain(*D_iterator, temp_COV, n->data.sampleList); //[MainLabProblem] find the information gain for the gene
+            if (max_Gene <= current_Gene) {
                 max_Gene = current_Gene;
-                Optimal_Gene = ____________; //[MainLabProblem] find the gene with maximum information gain
+                Optimal_Gene = *D_iterator; //[MainLabProblem] find the gene with maximum information gain
             }
         }
-        n->cls.clsGene = _____________; //[MainLabProblem] the Optimal_Gene, which has the maximum information gain, will be the classification gene
-        n->cls.cutoffValue = _______________________; //[MainLabProblem] find the cut off value for the gene
+        n->cls.clsGene = Optimal_Gene; //[MainLabProblem] the Optimal_Gene, which has the maximum information gain, will be the classification gene
+        n->cls.cutoffValue = max_Gene; //[MainLabProblem] find the cut off value for the gene
 
         list<unsigned int> lowstring; //this will save all the low expressed samples
         list<unsigned int> highstring; //this will save all the high expressed samples
@@ -439,22 +443,20 @@ void DecisionTree::makeDecisionTree(Node* n){
         new_DEG.remove(Optimal_Gene); // remove the gene that is used for classification
         for (S_iterator = n->data.sampleList.begin();
              S_iterator != n->data.sampleList.end(); S_iterator++) {
-            if (______________________________________________)) { //[MainLabProblem] if the expression level of the sample is higher than the cut off value,
+            if (exp.find({*S_iterator,Optimal_Gene})->second > max_Gene) { //[MainLabProblem] if the expression level of the sample is higher than the cut off value,
                 highstring.push_back(*S_iterator); //put the high expressed samples in the highstring
             } else { //if not,
                 lowstring.push_back(*S_iterator); //put the low expressed samples in the lowstirng
             }
         }
-
         n->high = new Node;
         n->low = new Node;
         n->high->data.sampleList = highstring; //highly expressed samples are sent to the high node
         n->high->data.clsGeneList = new_DEG; //the gene list which elminated the used gene is sent to the high node
         n->low->data.sampleList = lowstring; //low expressed samples are sent to the low node
         n->low->data.clsGeneList = new_DEG; //the gene list which elminated the used gene is sent to the low node
-
-        _________________________; //[MainLabProblem] do the same in the low node. (recursively)
-        _________________________; //[MainLabProblem] do the same in the high node. (recursively)
+        DecisionTree::makeDecisionTree(n->low); //[MainLabProblem] do the same in the low node. (recursively)
+        DecisionTree::makeDecisionTree(n->high); //[MainLabProblem] do the same in the high node. (recursively)
     }
 };
 
@@ -464,16 +466,16 @@ bool DecisionTree::predSample(unsigned int sampleNo, Node* n){
     bool torf;
     if (n->cls.clsResult != 0) { //if the current node is a leaf node
         if (n->cls.clsResult == 1) { //and if the current node says normal,
-            torf = ______; //[MainLabProblem] this sample is normal
+            torf = true; //[MainLabProblem] this sample is normal
         } else if (n->cls.clsResult == 2) { //else if the current node says disease,
-            torf = ______; //[MainLabProblem] this sample is disease
+            torf = false; //[MainLabProblem] this sample is disease
         }
     } else if (n->cls.clsResult == 0) { //else if the current node is not a leaf node,
         if (n->cls.cutoffValue
             > exp.find(pair<unsigned int, string>(sampleNo, n->cls.clsGene))->second) { //and if the sample's expression level is lower than the cut off value
-            torf = _____________; //[MainLabProblem] go to the low node
+            torf = predSample(sampleNo, n->low); //[MainLabProblem] go to the low node
         } else { //if not
-            torf = _____________; //[MainLabProblem] go to the high node
+            torf = predSample(sampleNo, n->high); //[MainLabProblem] go to the high node
         }
     }
     return torf; //return whether the sample is disease or not
@@ -494,8 +496,16 @@ double DecisionTree::getAccuracy(list<unsigned int> sampleList, Node* n){
             //[MainLabProblem] Write your own code in here.
             count truepositive, falsepositive, truenegative and falsenegative
         */
+        if (sampleCls.find(*S_iterator)->second^predSample(*S_iterator, n)){
+            if (predSample(*S_iterator, n)) falsepositive ++;
+            else falsenegative ++;
+        }
+        else {
+            if (predSample(*S_iterator, n)) truepositive ++;
+            else truenegative ++;
+        }
     }
-    double accuracy = _______________________ //[MainLabProblem] calculate accuracy
+    double accuracy = (truepositive+truenegative)/(truepositive+truenegative+falsepositive+falsenegative); //[MainLabProblem] calculate accuracy
     return accuracy; //return the accuracy
 };
 
@@ -534,7 +544,7 @@ double DecisionTree::nFoldCV(unsigned int n, Data d){
         list<unsigned int>::iterator L_iterator;
         for (L_iterator = sublist.find(i)->second.begin();
              L_iterator != sublist.find(i)->second.end(); L_iterator++) {
-            test_subset.push_back(_______________);//[MainLabProblem] one of the subset will be used as test set
+            test_subset.push_back(*L_iterator);//[MainLabProblem] one of the subset will be used as test set
         }
         list<unsigned int> train_subset;
         for (unsigned int j = 1; j <= Num_Total; j++) {
@@ -545,10 +555,10 @@ double DecisionTree::nFoldCV(unsigned int n, Data d){
             train_subset.remove(*L_iterator);
         } //the other samples are used as train_subset
         Node node;
-        node.data.sampleList = __________; //[MainLabProblem] set data in node
-        node.data.clsGeneList = _________; //[MainLabProblem] set data in node
-        ___________________; //[MainLabProblem] using the DEG list and train subsets, construct a decision tree
-        Accuracy_Avg += _____________; //[MainLabProblem] determine the accuarcy of the decision tree, and add it to the variable "Accuracy_Avg"
+        node.data.sampleList = train_subset; //[MainLabProblem] set data in node
+        node.data.clsGeneList = d.clsGeneList; //[MainLabProblem] set data in node
+        DecisionTree::makeDecisionTree(&node); //[MainLabProblem] using the DEG list and train subsets, construct a decision tree
+        Accuracy_Avg += getAccuracy(test_subset,&node); //[MainLabProblem] determine the accuarcy of the decision tree, and add it to the variable "Accuracy_Avg"
     }
     return Accuracy_Avg / n; //divide the variable with number of sets that we've done
 };
@@ -557,9 +567,9 @@ int main(){
     /* 1. Read data from file (Prelab) */
     DecisionTree dt;
     DecisionTree dt_test;
-    dt.readDataFromFile("mainlab_data/Lab10_GSE13164_train.txt"); // use given input file
-    dt_test.readDataFromFile("mainlab_data/Lab10_GSE13164_test.txt"); // use given input file
-    list<string> deg = dt.readDEGFromFile("mainlab_data/Lab10_GSE13164_DEG.txt"); // use given input file
+    dt.readDataFromFile("Lab10_GSE13164_train.txt"); // use given input file
+    dt_test.readDataFromFile("Lab10_GSE13164_test.txt"); // use given input file
+    list<string> deg = dt.readDEGFromFile("Lab10_GSE13164_DEG.txt"); // use given input file
 
     /*************************************************************************************/
     // This is Test for Prelab. Run this part and check it to TA before starting main lab.
@@ -591,12 +601,14 @@ int main(){
         n.data.sampleList.push_back(it3->first);
     }
     n.data.clsGeneList=deg;
+    cout << "#2 done" << endl;
 
 
     /* 3. Generate Decision Tree & Draw the tree from root to reaf */
     cout << "\nDecision Tree & Draw the tree from root to reaf" << endl;
     dt.makeDecisionTree(&n);
     dt.drawGraph(&n);
+    cout << "#3 done" << endl;
 
     /* 4. Prepare whole data for cross validation */
     Data d;
