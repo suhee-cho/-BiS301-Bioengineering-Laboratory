@@ -25,5 +25,6 @@ Lab7: Protein structure data analysis - Dynamic Programming
 **text.cpp**
 
 **text.h**
+- Header file for text.cpp
 
-*Note: I used g++ to compile .exe files
+*Note: I used g++ to compile .exe files*
