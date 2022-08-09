@@ -13,6 +13,11 @@ Lab3: Neural signal analysis - Neural spikes
 Lab6: DNA sequence data analysis - Dynamic Programming
 - README.md
 - Manual.pdf
+- DP_Main.cpp
+- DPmat.cpp
+- DPmat.h
+- Cell.cpp
+- Cell.h
 
 Lab7: Protein structure data analysis - Dynamic Programming
 - mainlab_file folder
