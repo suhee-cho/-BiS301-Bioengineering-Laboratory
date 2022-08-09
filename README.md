@@ -59,5 +59,6 @@
 - test.exe
 
 **Lab11: Computational modeling and analysis of biological networks**
+- README.md
 - Lab11_Manual.pdf
 - Lab11_MATLAB.m
