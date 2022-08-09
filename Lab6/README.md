@@ -18,6 +18,3 @@ Lab6: DNA sequence data analysis - Dynamic Programming
 
 **Cell.h**
 - Header file for Cell.cpp
-
-**output.exe
-- Executable file of the DP_Main.cpp
