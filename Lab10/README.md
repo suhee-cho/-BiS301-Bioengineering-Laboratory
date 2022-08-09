@@ -24,4 +24,4 @@ Lab10: Microarray data analysis 2
 **test.exe**
 - Executable file coded from MainLab.cpp
 
-*I used g++ compiler to code test.exe*
+*Note: I used MinGW g++ compiler to compile .exe files*
