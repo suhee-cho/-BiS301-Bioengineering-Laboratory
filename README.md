@@ -42,6 +42,15 @@
 
 **Lab9: Microarray data analysis 1**
 
+
 **Lab10: Microarray data analysis 2**
+- README.md
+- Manual.pdf
+- PreLab.cpp
+- MainLab.cpp
+- Lab10_GSE13164_DEG.txt
+- Lab10_GSE13164_train.txt
+- Lab10_GSE13164_test.txt
+- test.exe
 
 **Lab11: Computational modeling and analysis of biological networks**
