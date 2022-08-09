@@ -32,4 +32,4 @@ Lab7: Protein structure data analysis - Dynamic Programming
 **output.exe**
 - Executable file of the DP_Main.cpp
 
-*Note: I used g++ to compile .exe files*
+*Note: I used MinGW g++ compiler to compile .exe files*
