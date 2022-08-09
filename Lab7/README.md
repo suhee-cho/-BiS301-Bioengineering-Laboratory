@@ -23,8 +23,13 @@ Lab7: Protein structure data analysis - Dynamic Programming
 - Header file for Cell.cpp
 
 **text.cpp**
+- Defines Class: text
+- Contains string and its length
 
 **text.h**
 - Header file for text.cpp
+
+**output.exe**
+- Executable file of the DP_Main.cpp
 
 *Note: I used g++ to compile .exe files*
