@@ -7,7 +7,7 @@ Lab10: Microarray data analysis 2
 - Calculates information gain for an input gene and sample list
 
 **MainLab.cpp**
-- C++ file for prelab activity
+- C++ file for mainlab activity
 - Trains decision tree to classify samples into normal and cancer
 - Predicts the class of unknown samples using the trained decision tree
 - Validates the performance with k-fold cross validation
