@@ -10,6 +10,11 @@
 - Lab3_Manual.pdf
 - Lab3_MATLAB.m
 
+**Lab4: Brain wave measurement and analysis - EEG**
+- README.md
+- Lad4_Manual.pdf
+- Lab4_MATLAB.m
+
 **Lab6: DNA sequence data analysis - Dynamic Programming**
 - README.md
 - Lab6_Manual.pdf
@@ -59,5 +64,6 @@
 - test.exe
 
 **Lab11: Computational modeling and analysis of biological networks**
+- README.md
 - Lab11_Manual.pdf
 - Lab11_MATLAB.m
