@@ -3,12 +3,12 @@
 **Lab2: Physiological signal processing - ECG, EMG, PPG**
 - README.md
 - Manual.pdf
-- MATLAB code.m
+- Lab2_MATLAB.m
 
 **Lab3: Neural signal analysis - Neural spikes**
 - README.md
 - Manual.pdf
-- MATLAB code.m
+- Lab3_MATLAB.m
 
 **Lab6: DNA sequence data analysis - Dynamic Programming**
 - README.md
@@ -38,16 +38,21 @@
 - Example Data folder
 - Lab8 dataset folder
 - Manual.pdf
-- lab8 code.py
+- Lab8_Python.py
 
 **Lab9: Microarray data analysis 1**
-
+- README.md
+- Manual.pdf
+- Lab9_MATLAB.m
+- top 100 DEGs and p-value.txt
+- top 100 DEGs expression data for discovery.txt
+- top 100 DEGs expression data for validation.txt
 
 **Lab10: Microarray data analysis 2**
 - README.md
 - Manual.pdf
-- PreLab.cpp
-- MainLab.cpp
+- Lab10_PreLab_Cpp.cpp
+- Lab10_MainLab_Cpp.cpp
 - Lab10_GSE13164_DEG.txt
 - Lab10_GSE13164_train.txt
 - Lab10_GSE13164_test.txt
